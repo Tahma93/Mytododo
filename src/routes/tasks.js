@@ -13,5 +13,12 @@ router.get("/", getAllTasks); // Appel de la fonction getAllTasks pour traiter l
 // Route POST sur la racine du routeur ('/api/tasks') pour créer une nouvelle tâche
 router.post("/", createTask); // Appel de la fonction createTask pour traiter la requête POST
 
+// Route DELETE : Supprime une tâche par son ID (exemple : /api/tasks/1)
+route.delete("/:id", deleteTask); // Appel de la fonction deleteTask pour traiter la requête DELETE
+
+// Route PUT : Met à jour une tâche par son ID (exemple : /api/tasks/1)
+router.put("/:id", updateTask); // Appel de la fonction updateTask pour traiter la requête PUT
+
+
 //Exportation du routeur pour qu'il puisse être utilisé dans d'autres parties de l'application (notamment dans server.js)
 export default router;
