@@ -2,7 +2,7 @@
 import express from "express";
 
 // Importation des fonctions du contrôleur (getTasks et createTask) pour gérer les requêtes liées aux tâches
-import { getAllTasks, createTask } from "../controllers/taskController.js";
+import { getAllTasks, createTask, deleteTask, updateTask } from "../controllers/taskController.js";
 
 // Création d'une instance de routeur Express pour gérer les routes liées aux tâches
 const router = express.Router();
@@ -14,7 +14,7 @@ router.get("/", getAllTasks); // Appel de la fonction getAllTasks pour traiter l
 router.post("/", createTask); // Appel de la fonction createTask pour traiter la requête POST
 
 // Route DELETE : Supprime une tâche par son ID (exemple : /api/tasks/1)
-route.delete("/:id", deleteTask); // Appel de la fonction deleteTask pour traiter la requête DELETE
+router.delete("/:id", deleteTask); // Appel de la fonction deleteTask pour traiter la requête DELETE
 
 // Route PUT : Met à jour une tâche par son ID (exemple : /api/tasks/1)
 router.put("/:id", updateTask); // Appel de la fonction updateTask pour traiter la requête PUT
