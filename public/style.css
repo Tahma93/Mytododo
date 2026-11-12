@@ -1,0 +1,743 @@
+/* ================================================= */
+/* 1. Paramètres généraux (mobile-first)             */
+/* Les styles de base sont pour le téléphone.        */
+/* On agrandit ensuite avec min-width.               */
+/* ================================================= */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f4f6f9;
+    color: #333;
+    margin: 0;
+}
+
+/* ================================================= */
+/* 2. Organisation générale de la page               */
+/* ================================================= */
+
+.app-layout {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ================================================= */
+/* 3. Menu de navigation                             */
+/* ================================================= */
+
+.sidebar {
+    width: 100%;
+    min-width: 0;
+    background: #ffffff;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 22px 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header h2 {
+    color: #3B82F6;
+    font-size: 23px;
+    margin: 0 0 25px;
+}
+
+.new-list-btn {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    border-radius: 9px;
+    padding: 13px;
+    min-height: 44px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 25px;
+}
+
+.new-list-btn:hover {
+    background: #2563EB;
+}
+
+.sidebar-nav {
+    flex: 1;
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.nav-title {
+    color: #9ca3af;
+    font-size: 11px;
+    font-weight: bold;
+    margin: 20px 8px 10px;
+}
+
+.nav-item {
+    display: block;
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 5px;
+    cursor: pointer;
+    color: #4b5563;
+    font-size: 14px;
+}
+
+.nav-item:hover,
+.nav-item.active {
+    background: #edf2f7;
+    color: #3B82F6;
+}
+
+.history-list {
+    max-height: 250px;
+    overflow-y: auto;
+}
+
+.sidebar-bottom {
+    border-top: 1px solid #eeeeee;
+    padding-top: 15px;
+}
+
+.logout-btn {
+    color: #dc3545;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 15px;
+    padding: 10px 5px;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    background: #3B82F6;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+}
+
+.user-profile strong,
+.user-profile small {
+    display: block;
+}
+
+.user-profile small {
+    color: #888;
+    margin-top: 3px;
+}
+
+/* ================================================= */
+/* 4. Zone principale                                */
+/* ================================================= */
+
+.main-content {
+    flex: 1;
+    padding: 20px;
+    min-width: 0;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.main-header h1 {
+    color: #3B82F6;
+    font-size: 24px;
+    margin: 5px 0;
+}
+
+.subtitle {
+    color: #8a94a3;
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.settings-icon {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 9px;
+    padding: 10px 14px;
+    min-height: 44px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* ================================================= */
+/* 5. Tableau de bord et compteurs                   */
+/* ================================================= */
+
+.dashboard {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.stat-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+
+.stat-card span {
+    font-size: 20px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+.stat-card strong {
+    display: block;
+    font-size: 26px;
+    color: #3B82F6;
+}
+
+.stat-card small {
+    color: #888;
+}
+
+/* ================================================= */
+/* 6. Barre de progression                           */
+/* ================================================= */
+
+.progress-section {
+    background: white;
+    padding: 22px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.progress-track {
+    height: 10px;
+    background: #edf0f3;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.progress-bar {
+    width: 0;
+    height: 100%;
+    background: #28a745;
+    border-radius: 20px;
+    transition: width 0.3s;
+}
+
+/* ================================================= */
+/* 7. Ajout d'une nouvelle tâche                     */
+/* ================================================= */
+
+.add-task-section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 30px;
+}
+
+.add-task-section input,
+.add-task-section select {
+    padding: 12px;
+    border: 1px solid #dce1e7;
+    border-radius: 8px;
+    background: white;
+    font-size: 16px;
+    min-width: 0;
+}
+
+.add-task-section input {
+    flex: 1;
+}
+
+.add-task-section button {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    min-height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.add-task-section button:hover {
+    background: #2563EB;
+}
+
+/* ================================================= */
+/* 8. Catégories de tâches                           */
+/* ================================================= */
+
+.category-section {
+    margin-bottom: 28px;
+}
+
+.category-title {
+    font-size: 17px;
+    color: #3B82F6;
+    margin-bottom: 13px;
+}
+
+/* ================================================= */
+/* 9. Bulles de tâches                               */
+/* ================================================= */
+
+.task-item,
+.task-card,
+.card-task {
+    background: white;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 9px;
+    border-left: 4px solid #3498db;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.task-item:hover,
+.task-card:hover,
+.card-task:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.09);
+}
+
+/* ================================================= */
+/* 10. Cases de statut                               */
+/* ================================================= */
+
+.task-status {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+    border: 2px solid #adb5bd;
+    border-radius: 5px;
+    background: white;
+    color: #495057;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+.task-text {
+    flex: 1;
+    text-decoration: none;
+}
+
+/* ================================================= */
+/* 11. Etat validé : vert                            */
+/* ================================================= */
+
+.task-item.valide,
+.task-card.valide,
+.card-task.valide {
+    background: #d4edda;
+    border-color: #28a745;
+    color: #155724;
+}
+
+.task-status.valide {
+    background: #28a745;
+    border-color: #28a745;
+    color: white;
+}
+
+.task-item.valide .task-text,
+.task-card.valide .task-text,
+.card-task.valide .task-text {
+    text-decoration: line-through;
+}
+
+/* ================================================= */
+/* 12. Etat non validé : rouge                       */
+/* ================================================= */
+
+.task-item.non-valide,
+.task-card.non-valide,
+.card-task.non-valide {
+    background: #f8d7da;
+    border-color: #dc3545;
+    color: #721c24;
+}
+
+.task-status.non-valide {
+    background: #dc3545;
+    border-color: #dc3545;
+    color: white;
+}
+
+/* ================================================= */
+/* 13. Boutons et historique                         */
+/* ================================================= */
+
+.list-actions {
+    margin-top: 30px;
+}
+
+.archive-btn {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    padding: 12px 18px;
+    min-height: 44px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.archive-btn:hover {
+    background: #2563EB;
+}
+
+.history-card {
+    background: white;
+    padding: 18px;
+    margin: 12px 0;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.history-card button {
+    background: #3B82F6;
+    color: white;
+    border: none;
+    padding: 9px 13px;
+    min-height: 44px;
+    border-radius: 7px;
+}
+
+.history-card button:hover {
+    background: #2563EB;
+}
+
+/* ================================================= */
+/* 14. Fenêtre des paramètres                        */
+/* ================================================= */
+
+.modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15px;
+    z-index: 10;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 430px;
+    padding: 30px;
+    border-radius: 14px;
+    position: relative;
+}
+
+.close-modal {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    border: none;
+    background: none;
+    font-size: 25px;
+    cursor: pointer;
+}
+
+.setting-option {
+    display: flex;
+    gap: 10px;
+    margin: 25px 0;
+}
+
+.danger-button {
+    background: #dc3545;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 11px;
+    min-height: 44px;
+    cursor: pointer;
+}
+
+/* ================================================= */
+/* 15. Affichage conditionnel                        */
+/* ================================================= */
+
+.hidden {
+    display: none !important;
+}
+
+/* ================================================= */
+/* 16. Mode sombre                                   */
+/* ================================================= */
+
+body.dark-mode {
+    background: #18212d;
+    color: #edf2f7;
+}
+
+.dark-mode .sidebar,
+.dark-mode .stat-card,
+.dark-mode .progress-section,
+.dark-mode .task-item,
+.dark-mode .task-card,
+.dark-mode .history-card,
+.dark-mode .modal-content {
+    background: #263445;
+    color: #edf2f7;
+}
+
+.dark-mode .main-header h1,
+.dark-mode .category-title,
+.dark-mode .stat-card strong {
+    color: #edf2f7;
+}
+
+/* ================================================= */
+/* 17. Page de connexion (mobile-first)              */
+/* ================================================= */
+
+body.login-page {
+    font-family: 'Inter', sans-serif;
+    background-color: #F3F4F6;
+    color: #333333;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.login-page .login-container {
+    width: 100%;
+    max-width: 420px;
+    background-color: #FFFFFF;
+    padding: 28px 22px;
+    box-sizing: border-box;
+    border-radius: 18px;
+    box-shadow: 0 10px 35px rgba(0, 0, 0, 0.07);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-logo {
+    width: 60px;
+    height: 60px;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border-radius: 16px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.login-header h1 {
+    color: #1F2937;
+    font-size: 22px;
+    margin-bottom: 12px;
+}
+
+.login-header p {
+    color: #6B7280;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.login-page .input-group {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 22px;
+}
+
+.login-page .input-group label {
+    color: #374151;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 9px;
+}
+
+.login-page .input-group input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 14px;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+    background-color: #FFFFFF;
+    color: #333333;
+    font-size: 16px; /* 16px évite le zoom automatique sur iPhone */
+    outline: none;
+    transition: 0.2s ease;
+}
+
+.login-page .input-group input:focus {
+    border-color: #3B82F6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
+}
+
+.login-page .btn-submit {
+    width: 100%;
+    min-height: 44px;
+    padding: 15px;
+    background-color: #3B82F6;
+    color: #FFFFFF;
+    border: none;
+    border-radius: 9px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.login-page .btn-submit:hover {
+    background-color: #2563EB;
+}
+
+.login-page .error-message {
+    margin-top: 20px;
+    padding: 12px;
+    background-color: #FEE2E2;
+    color: #B91C1C;
+    border: 1px solid #FECACA;
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+}
+
+.switch-mode {
+    text-align: center;
+    margin-top: 16px;
+    font-size: 14px;
+    color: #64748b;
+}
+
+.btn-lien {
+    background: none;
+    border: none;
+    color: #3b82f6;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    min-height: 44px;
+}
+
+.btn-lien:hover {
+    text-decoration: underline;
+}
+
+.login-footer {
+    margin-top: 30px;
+    text-align: center;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 20px;
+}
+
+.login-footer p {
+    color: #9CA3AF;
+    font-size: 12px;
+}
+
+/* ================================================= */
+/* 18. Agrandissement tablette : à partir de 481px   */
+/* ================================================= */
+
+@media (min-width: 481px) {
+
+    body.login-page {
+        padding: 30px;
+    }
+
+    .login-page .login-container {
+        padding: 40px;
+    }
+
+    .login-header h1 {
+        font-size: 25px;
+    }
+}
+
+/* ================================================= */
+/* 19. Agrandissement ordinateur : à partir de 801px */
+/* ================================================= */
+
+@media (min-width: 801px) {
+
+    .app-layout {
+        flex-direction: row;
+    }
+
+    .sidebar {
+        width: 260px;
+        min-width: 260px;
+        border-right: 1px solid #e5e7eb;
+        border-bottom: none;
+    }
+
+    .sidebar-nav {
+        max-height: none;
+    }
+
+    .main-content {
+        padding: 35px;
+    }
+
+    .main-header h1 {
+        font-size: 28px;
+    }
+
+    .dashboard {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .add-task-section {
+        flex-direction: row;
+    }
+
+    .add-task-section input {
+        font-size: 14px;
+    }
+
+    .history-card {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+}

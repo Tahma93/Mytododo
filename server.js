@@ -1,39 +1,159 @@
-// Importation du framework Express pour créer le serveur wev et gérer les routes HTTP
-import express from "express"; 
+// Importation du framework Express pour créer le serveur web et les routes
+import express from 'express';
 
-// Importation du middleware CORS pour autoriser les requêtes cross-origin entre le client et le serveur
-import cors from "cors"; 
+// Importation de CORS pour autoriser les requêtes entre le navigateur et le serveur
+import cors from 'cors';
 
-// Importation de dotenv pour charger et sécuriser les variables d'environnement à partir d'un fichier .env
-import dotenv from "dotenv";
+// Importation de dotenv pour lire le fichier .env
+import dotenv from 'dotenv';
 
-// Importation des routes dédiées aux tâches 
-import taskRoutes from "./src/routes/tasks.js";
+// Importation du module path pour manipuler les chemins de fichiers
+import path from 'path';
 
+// Importation de fileURLToPath pour trouver le dossier du fichier actuel
+import { fileURLToPath } from 'url';
 
+// Importation du module crypto (intégré à Node.js) pour sécuriser les mots de passe
+import crypto from 'crypto';
 
-// Initialisation et chargement des variables d'environnement dans l'objet global process.env
-dotenv.config();
+// Importation des routes des tâches
+import taskRoutes from './src/routes/tasks.js';
 
-// Création de l'instance de l'application Express
+// Création de l'application Express
 const app = express();
 
-// Définition du port d'écoute : utilisation de la variable d'environnement PORT ou du port 3000 par défaut
+// Chargement des variables du fichier .env
+dotenv.config();
+
+// Chemins de fichiers (nécessaires avec les modules ES)
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Liste des comptes créés.
+// Attention : ces comptes sont perdus quand le serveur redémarre.
+// On ajoutera une base de données plus tard.
+const utilisateurs = [];
+
+// Transforme un mot de passe en version illisible avant de le stocker
+function hacherMotDePasse(motDePasse) {
+    const sel = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.scryptSync(motDePasse, sel, 64).toString('hex');
+    return `${sel}:${hash}`;
+}
+
+// Vérifie qu'un mot de passe correspond à celui stocké
+function verifierMotDePasse(motDePasse, motDePasseStocke) {
+    const [sel, hashStocke] = motDePasseStocke.split(':');
+    const hashTest = crypto.scryptSync(motDePasse, sel, 64).toString('hex');
+    return crypto.timingSafeEqual(
+        Buffer.from(hashStocke, 'hex'),
+        Buffer.from(hashTest, 'hex')
+    );
+}
+
+// Middlewares globaux
+app.use(cors());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Route d'inscription : création d'un nouveau compte
+app.post('/api/auth/register', (req, res) => {
+
+    // Récupération des informations envoyées par le formulaire
+    const nom = (req.body.nom || '').trim();
+    const email = (req.body.email || '').trim().toLowerCase();
+    const password = req.body.password || '';
+
+    // Vérification : tous les champs sont remplis
+    if (!nom || !email || !password) {
+        return res.status(400).json({
+            success: false,
+            message: "Tous les champs sont obligatoires."
+        });
+    }
+
+    // Vérification : mot de passe assez long
+    if (password.length < 8) {
+        return res.status(400).json({
+            success: false,
+            message: "Le mot de passe doit contenir au moins 8 caractères."
+        });
+    }
+
+    // Vérification : l'email n'est pas déjà utilisé
+    const existe = utilisateurs.some(u => u.email === email);
+    if (existe) {
+        return res.status(409).json({
+            success: false,
+            message: "Un compte existe déjà avec cette adresse email."
+        });
+    }
+
+    // Enregistrement du nouveau compte (mot de passe haché)
+    utilisateurs.push({
+        nom,
+        email,
+        motDePasse: hacherMotDePasse(password)
+    });
+
+    return res.status(201).json({
+        success: true,
+        redirect: '/'
+    });
+});
+
+// Route de connexion : accepte le compte de démo ou un compte créé
+app.post('/api/auth/login', (req, res) => {
+
+    // Récupération des identifiants saisis
+    const email = (req.body.email || '').trim().toLowerCase();
+    const password = req.body.password || '';
+
+    // Identifiants de démonstration (depuis le fichier .env)
+    const demoEmail = process.env.DEMO_EMAIL;
+    const demoPassword = process.env.DEMO_PASSWORD;
+
+    // Cas 1 : connexion avec le compte de démo
+    if (demoEmail && email === demoEmail.toLowerCase() && password === demoPassword) {
+        return res.status(200).json({
+            success: true,
+            redirect: '/'
+        });
+    }
+
+    // Cas 2 : connexion avec un compte créé
+    const utilisateur = utilisateurs.find(u => u.email === email);
+    if (utilisateur && verifierMotDePasse(password, utilisateur.motDePasse)) {
+        return res.status(200).json({
+            success: true,
+            redirect: '/'
+        });
+    }
+
+    // Sinon : identifiants incorrects
+    return res.status(401).json({
+        success: false,
+        message: "Email ou mot de passe incorrect."
+    });
+});
+
+// Page de connexion
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'login.html'));
+});
+
+// Page principale
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
+
+// Routes des tâches
+app.use('/api/tasks', taskRoutes);
+
+// Démarrage du serveur
 const PORT = process.env.PORT || 3000;
 
-// Configuration des middlewares globaux pour l'application Express
-app.use(cors()) // Activation du middleware CORS pour autoriser les échanges de données
-app.use(express.json()); // Configuration d'Express pour parser automatiquement les requêtes entrantes au format JSON
-
-// Déclaration de la route test à la racine de l'API pour vérifier le bon fonctionnement du serveur
-app.get("/", (req, res) => {
-res.json({ message: "Bienvenue sur l'API Mytododo !" }); // Envoi d'une réponse JSON avec un message de bienvenue
-});
-
-// Démarage du serveur Node.js sur le port défini et affichage d'un message dans la console pour indiquer que le serveur est opérationnel
 app.listen(PORT, () => {
-  console.log(`Serveur démarré sur le port ${PORT}`); // Affichage du message de confirmation dans la console
+    console.log(`Serveur Mytododo démarré sur le port ${PORT}`);
 });
-
-// Utilisation des routes dédiées aux tâches pour toutes les requêtes commençant par /api/tasks
-app.use("/api/tasks", taskRoutes); 

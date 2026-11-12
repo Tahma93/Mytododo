@@ -1,0 +1,193 @@
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mytododo</title>
+
+    <!-- Liaison avec ma feuille de style -->
+    <link rel="stylesheet" href="/style.css">
+</head>
+
+<body>
+
+    <!-- Conteneur général de mon application -->
+    <div class="app-layout">
+
+        <!-- Menu latéral de navigation -->
+        <aside class="sidebar">
+
+            <!-- Logo et nom de mon application -->
+            <div class="sidebar-header">
+                <h2>✓ Mytododo</h2>
+            </div>
+
+            <!-- Bouton permettant de créer une nouvelle liste -->
+            <button id="newListBtn" class="new-list-btn">
+                + Nouvelle liste
+            </button>
+
+            <!-- Navigation entre les différentes catégories -->
+            <nav class="sidebar-nav">
+
+                <p class="nav-title">ESPACE DE TRAVAIL</p>
+
+                <button class="nav-item active" data-view="current">
+                    ☑ Ma liste actuelle
+                </button>
+
+                <button class="nav-item" data-view="history">
+                    ◷ Historique
+                </button>
+
+                <p class="nav-title">MES ANCIENNES LISTES</p>
+
+                <!-- Affichage automatique de l'historique -->
+                <div id="historyList" class="history-list"></div>
+
+            </nav>
+
+            <!-- Paramètres et compte utilisateur -->
+            <div class="sidebar-bottom">
+
+                <button id="settingsBtn" class="nav-item">
+                    ⚙ Paramètres
+                </button>
+
+                <button id="logoutBtn" class="nav-item logout-btn">
+                    ⇥ Déconnexion
+                </button>
+
+                <div class="user-profile">
+                    <div class="user-avatar">M</div>
+                    <div>
+                        <strong>Mon compte</strong>
+                        <small>Utilisateur Mytododo</small>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- Zone principale de mon application -->
+        <main class="main-content">
+
+            <!-- En-tête de la liste -->
+            <header class="main-header">
+                <div>
+                    <p class="subtitle">MON ESPACE PERSONNEL</p>
+                    <h1 id="pageTitle">Ma liste de tâches</h1>
+                </div>
+
+                <button id="settingsTopBtn" class="settings-icon"
+                        title="Paramètres">
+                    ⚙
+                </button>
+            </header>
+
+            <!-- Tableau de bord et suivi de progression -->
+            <section class="dashboard">
+
+                <div class="stat-card">
+                    <span>✓</span>
+                    <strong id="validatedCount">0</strong>
+                    <small>Tâches validées</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>✕</span>
+                    <strong id="rejectedCount">0</strong>
+                    <small>Non validées</small>
+                </div>
+
+                <div class="stat-card">
+                    <span>□</span>
+                    <strong id="pendingCount">0</strong>
+                    <small>En attente</small>
+                </div>
+
+            </section>
+
+            <!-- Barre de progression globale -->
+            <section class="progress-section">
+                <div class="progress-label">
+                    <strong>Progression de ma liste</strong>
+                    <span id="progressPercent">0 %</span>
+                </div>
+
+                <div class="progress-track">
+                    <div id="progressBar" class="progress-bar"></div>
+                </div>
+            </section>
+
+            <!-- Zone de création d'une tâche -->
+            <section class="add-task-section">
+
+                <input
+                    type="text"
+                    id="newTaskInput"
+                    placeholder="Ajouter une nouvelle tâche..."
+                >
+
+                <select id="taskCategory">
+                    <option value="Personnel">Personnel</option>
+                    <option value="Administratif">Administratif</option>
+                    <option value="RNCP">Dossier professionnel RNCP</option>
+                    <option value="Activités types">Activités types</option>
+                    <option value="Formation">Formation et révisions</option>
+                    <option value="Objectifs">Objectifs mensuels</option>
+                </select>
+
+                <button id="addTaskBtn">Ajouter</button>
+
+            </section>
+
+            <!-- Affichage des catégories et des tâches -->
+            <section id="tasksContainer" class="tasks-container"></section>
+
+            <!-- Bouton de clôture de la liste -->
+            <div class="list-actions">
+                <button id="archiveBtn" class="archive-btn">
+                    Terminer et archiver cette liste
+                </button>
+            </div>
+
+            <!-- Affichage de l'historique -->
+            <section id="historyView" class="history-view hidden">
+                <h2>Historique de mes listes</h2>
+                <p>Retrouver mes anciennes listes et suivre mon évolution.</p>
+                <div id="historyCards"></div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Fenêtre des paramètres -->
+    <div id="settingsModal" class="modal hidden">
+
+        <div class="modal-content">
+
+            <button id="closeSettings" class="close-modal">×</button>
+
+            <h2>Paramètres</h2>
+
+            <p>Personnalisation de mon application Mytododo.</p>
+
+            <label class="setting-option">
+                <input type="checkbox" id="darkMode">
+                Activer le mode sombre
+            </label>
+
+            <button id="clearHistoryBtn" class="danger-button">
+                Effacer mon historique
+            </button>
+
+        </div>
+    </div>
+
+    <!-- Liaison avec mon fichier JavaScript -->
+    <script src="/script.js"></script>
+
+</body>
+</html>

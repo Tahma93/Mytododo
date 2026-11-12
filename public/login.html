@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Connexion - Mytododo</title>
+
+    <!-- Feuille de style CSS -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Police Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body class="login-page">
+
+    <main class="login-container">
+
+        <!-- En-tête -->
+        <div class="login-header">
+            <div class="login-logo">M</div>
+            <h1 id="titre">Bienvenue sur Mytododo</h1>
+            <p id="sous-titre">Connectez-vous pour retrouver vos listes de tâches.</p>
+        </div>
+
+        <!-- Formulaire -->
+        <form id="loginForm">
+
+            <!-- Champ nom : affiché seulement pour créer un compte -->
+            <div class="input-group" id="groupe-nom" style="display: none;">
+                <label for="nom">Nom</label>
+                <input
+                    type="text"
+                    id="nom"
+                    name="nom"
+                    placeholder="Votre prénom ou pseudo"
+                >
+            </div>
+
+            <!-- Email -->
+            <div class="input-group">
+                <label for="email">Adresse email</label>
+                <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    required
+                    placeholder="nom@exemple.com"
+                >
+            </div>
+
+            <!-- Mot de passe -->
+            <div class="input-group">
+                <label for="password">Mot de passe</label>
+                <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    required
+                    minlength="8"
+                    placeholder="Votre mot de passe"
+                >
+            </div>
+
+            <!-- Bouton principal -->
+            <button type="submit" class="btn-submit" id="btn-principal">
+                Se connecter
+            </button>
+
+        </form>
+
+        <!-- Message d'erreur ou de succès -->
+        <div
+            id="error-message"
+            class="error-message"
+            role="alert"
+            style="display: none;"
+        ></div>
+
+        <!-- Bouton pour changer de mode -->
+        <p class="switch-mode">
+            <span id="texte-switch">Pas encore de compte ?</span>
+            <button type="button" id="btn-switch" class="btn-lien">Créer un compte</button>
+        </p>
+
+        <div class="login-footer">
+            <p>© 2026 Mytododo - Mon espace personnel</p>
+        </div>
+
+    </main>
+
+    <script>
+        const form = document.getElementById('loginForm');
+        const errorDiv = document.getElementById('error-message');
+        const groupeNom = document.getElementById('groupe-nom');
+        const nomInput = document.getElementById('nom');
+        const titre = document.getElementById('titre');
+        const sousTitre = document.getElementById('sous-titre');
+        const btnPrincipal = document.getElementById('btn-principal');
+        const texteSwitch = document.getElementById('texte-switch');
+        const btnSwitch = document.getElementById('btn-switch');
+
+        // Mode actuel : "login" (connexion) ou "signup" (inscription)
+        let mode = 'login';
+
+        // Change l'affichage selon le mode choisi
+        function changerMode() {
+            mode = mode === 'login' ? 'signup' : 'login';
+            errorDiv.style.display = 'none';
+
+            if (mode === 'signup') {
+                titre.textContent = 'Créer un compte';
+                sousTitre.textContent = 'Inscrivez-vous pour commencer à organiser vos listes.';
+                groupeNom.style.display = 'block';
+                nomInput.required = true;
+                btnPrincipal.textContent = 'Créer mon compte';
+                texteSwitch.textContent = 'Vous avez déjà un compte ?';
+                btnSwitch.textContent = 'Se connecter';
+            } else {
+                titre.textContent = 'Bienvenue sur Mytododo';
+                sousTitre.textContent = 'Connectez-vous pour retrouver vos listes de tâches.';
+                groupeNom.style.display = 'none';
+                nomInput.required = false;
+                btnPrincipal.textContent = 'Se connecter';
+                texteSwitch.textContent = 'Pas encore de compte ?';
+                btnSwitch.textContent = 'Créer un compte';
+            }
+        }
+
+        btnSwitch.addEventListener('click', changerMode);
+
+        // Envoi du formulaire
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const nom = nomInput.value;
+
+            errorDiv.style.display = 'none';
+
+            // Choix de l'adresse selon le mode
+            const url = mode === 'signup' ? '/api/auth/register' : '/api/auth/login';
+
+            // Données envoyées (le nom seulement à l'inscription)
+            const corps = mode === 'signup'
+                ? { nom, email, password }
+                : { email, password };
+
+            try {
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(corps)
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    window.location.href = data.redirect;
+                } else {
+                    errorDiv.style.display = 'block';
+                    errorDiv.textContent = data.message || 'Une erreur est survenue.';
+                }
+
+            } catch (err) {
+                errorDiv.style.display = 'block';
+                errorDiv.textContent = 'Erreur de connexion au serveur.';
+            }
+        });
+    </script>
+
+</body>
+</html>

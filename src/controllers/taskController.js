@@ -1,62 +1,106 @@
-// Simulation d'une base de données temporaire (partagée pour l'instant)
-let tasks = [
-    { id: 1, title: "Terminer le projet Mytododo", completed: false },
-    { id: 2, title: "Revoir les commentaires du code", completed: true },
-    ];
 
-// COntrôleur pour récupérer toutes les tâches
+// Liste des tâches par défaut de Mytododo
+const defaultTasks = [
+    {
+        id: 1,
+        title: "Terminer le projet Mytododo",
+        completed: false
+    },
+    {
+        id: 2,
+        title: "Revoir les commentaires du code",
+        completed: true
+    },
+    {
+        id: 3,
+        title: "Ajouter de nouvelles fonctionnalités",
+        completed: false
+    },
+    {
+        id: 4,
+        title: "Tester l'application",
+        completed: false
+    }
+];
+
+// Initialisation de la liste
+let tasks = defaultTasks.map(task => ({ ...task }));
+
+// Récupérer toutes les tâches
 export const getAllTasks = (req, res) => {
-    res.json(tasks); // Envoi de la liste des tâches au format JSON
+    // Si la liste est vide, on restaure les tâches par défaut
+    if (tasks.length === 0) {
+        tasks = defaultTasks.map(task => ({ ...task }));
+    }
+
+    res.json(tasks);
 };
 
-// Contrôleur pour ajouter une nouvelle tâche
+// Ajouter une nouvelle tâche
 export const createTask = (req, res) => {
-    const { title } = req.body; // Extraction du titre de la tâche depuis le corps (body) de la requête
+    const { title } = req.body;
 
-    // Création d'un nouvel objet tâche avec un ID unique et la date actuelle
+    if (!title || !title.trim()) {
+        return res.status(400).json({
+            message: "Le titre de la tâche est obligatoire"
+        });
+    }
+
     const newTask = {
-        id: Date.now(), // Utilisation de la date actuelle comme ID unique pour la tâche
-        title, // valeur par défaut du titre de la tâche
-        completed: false, // Par défaut, la tâche est marquée comme non complétée
+        id: Date.now(),
+        title: title.trim(),
+        completed: false
     };
 
-    // Ajout de la nouvelle tâche dans notre tableau temporaire
     tasks.push(newTask);
 
-    // Renvoi d'une réponse HTTP avec le code 201 (Created) et la nouvelle tâche au format JSON
     res.status(201).json(newTask);
-}
-
-
-// Contrôleur pour supprimer une tâche par son ID
-export const deleteTask = (req, res) => {
-    const { id } = req.params; // Extraction de l'ID de la tâche depuis les paramètres de l'URL
-
-    const taskId = Number (req.params.id); // Conversion de l'ID en nombre pour la comparaison
-    const taskIndex = tasks.findIndex(t => t.id === taskId); // Recherche de l'index de la tâche à supprimer dans le tableau
-
-    if (taskIndex === -1) { // Si la tâche n'est pas trouvée (index = -1)
-        return res.status(404).json({ message: "Tâche non trouvée" }); // Envoi d'une réponse HTTP 404 avec un message d'erreur
-    }
-
-    const deletedTask = tasks.splice(taskIndex, 1); // Suppression de la tâche du tableau et récupération de la tâche supprimée
-    res.json ({ message: "Tâche supprimée avec succès", task: deletedTask[0] }); // Envoi d'une réponse HTTP avec un message de succès et la tâche supprimée
 };
 
-// Contrôleur pour modifier une tâche par son ID
+// Supprimer une tâche
+export const deleteTask = (req, res) => {
+    const taskId = Number(req.params.id);
 
-export const updateTask = (req, res) => {
-    const taskId = Number(req.params.id); // Conversion de l'ID en nombre pour la comparaison
-    const task = tasks.find(t => t.id === taskId); // Recherche de la tâche à modifier dans le tableau
+    const taskIndex = tasks.findIndex(t => t.id === taskId);
 
-    if (task) { // Si la tâche est trouvée
-        return res.status(404).json({ message: "Tâche non trouvée" }); // Envoi d'une réponse HTTP 404 avec un message d'erreur
+    if (taskIndex === -1) {
+        return res.status(404).json({
+            message: "Tâche non trouvée"
+        });
     }
 
-    const { title, completed } = req.body; // Extraction des nouvelles valeurs depuis le corps (body) de la requête
+    const deletedTask = tasks.splice(taskIndex, 1);
 
-    if (title !== undefined) task.title = title; // Mise à jour du titre si une nouvelle valeur est fournie
-    if (completed !== undefined) task.completed = completed; // Mise à jour du statut de complétion si une nouvelle valeur est fournie
+    res.json({
+        message: "Tâche supprimée avec succès",
+        task: deletedTask[0]
+    });
+};
 
-    res.json({ message: "Tâche mise à jour avec succès", task }); // Envoi d'une réponse HTTP avec un message de succès et la tâche mise à jour
-}
+// Modifier une tâche
+export const updateTask = (req, res) => {
+    const taskId = Number(req.params.id);
+
+    const task = tasks.find(t => t.id === taskId);
+
+    if (!task) {
+        return res.status(404).json({
+            message: "Tâche non trouvée"
+        });
+    }
+
+    const { title, completed } = req.body;
+
+    if (title !== undefined) {
+        task.title = title;
+    }
+
+    if (completed !== undefined) {
+        task.completed = completed;
+    }
+
+    res.json({
+        message: "Tâche mise à jour avec succès",
+        task
+    });
+};
